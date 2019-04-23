@@ -2,7 +2,7 @@
 from librouteros.login import login_plain
 from librouteros import connect, ConnectionError
 import time, getpass
-# This script connects to each device via API and retrieves firmware verions.
+# This script connects to each device via API and retrieves firmware versions.
 # The running and available versions get written to a file. The output can always be formatted to your needs.
 
 method = (login_plain,) # using the plaintext API
@@ -10,6 +10,7 @@ current_date = time.strftime('%m-%d-%Y') # get todays date; will be appended to 
 
 username = input('Enter your username: ')
 password = getpass.getpass(prompt='Enter your password: ', stream=None)
+print('----------------------------------')
 
 def login(username, password, device):
 	try:
