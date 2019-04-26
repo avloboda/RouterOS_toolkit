@@ -1,4 +1,4 @@
-# mikrotik_syslog_deployment
+# Mikrotik Syslog Deployment
 
 Tested with Python3.6
 

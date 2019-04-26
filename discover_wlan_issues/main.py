@@ -10,6 +10,10 @@ username = input('Enter your username: ')
 password = getpass.getpass(prompt='Enter your password: ', stream=None)
 print('----------------------------------')
 
+signalthreshold = -75 # wireless signal threshold
+lopsidedthreshold = 6 # the two channels should be identical under good conditions
+snrthreshold = 15 # SNR threshold
+
 def login(username, password, device):
 	try:
 		api = connect(username=username, password=password, host=device, login_methods=method)
@@ -21,9 +25,9 @@ def login(username, password, device):
 		print('Error has occured: {}'.format(unknown_error))
 		return None
 		
-def runcode(command):    # this function makes API calls to the device.
+def runcode(command, extra):    # this is where the script will sends API calls to the device.
 	try:
-		output = api(cmd=command)
+		output = api(cmd=command, stats=extra)
 		return output
 	except Exception as unknown_error:
 		print('Error has occured: {}'.format(unknown_error))
@@ -43,49 +47,48 @@ for device in devices_list:
 		print('Failed to establish a connection. Moving on to next device.')
 		print('----------------------------------------------------')
 		continue
+
+	output = runcode('/interface/wireless/registration-table/print', True)
 	
-	print('Retrieving data...')
-	output = runcode('/system/resource/print')
-	board_name = output[0]['board-name']
-	architecture = output[0]['architecture-name']
-	output = runcode('/system/routerboard/print')
-	version = output[0]['current-firmware']
-	output = runcode('/system/identity/print')
-	hostname = output[0]['name']
+	if output == (): # check if anything was returned (if interface is disabled, empty tuple returned.)
+		print('Wlan interface is likely disabled/no connected clients/or a 60G interface. Moving on to next device.')
+		continue
+	elif 'tx-signal-strength-ch0' not in output[0]: #known issues, if persists, consider running the runcode function twice
+		print('Device did not return tx-signal-strength. Moving on to next device.')
+		continue
 
-	try:
-		print('Writing to complete-list file...')
-		with open('complete_list-{}.txt'.format(current_date), 'a') as file:
-			file.write('{}\t{}\t{}\t{}\t{}\n'.format(device,hostname,board_name,architecture,version))
-	except Exception as unknown_error:
-		print(unknown_error)
+	for i in range(len(output)):	# making another loop here in case there are multiple connections at this AP.
+		wlanid = output[i]['.id']
+		ch0 = int(output[i]['tx-signal-strength-ch0'])
+		ch1 = int(output[i]['tx-signal-strength-ch1'])
+		snr = int(output[i]['signal-to-noise'])
+		issues = 0 # keep track of potential problems
+		difference = abs(ch0-ch1) # get the difference in signals
 
-	if architecture == 'arm':
+		if ch0 < signalthreshold or ch1 < signalthreshold:
+			issues += 1
+		elif difference >= lopsidedthreshold:
+			issues += 1
+		elif snr <= snrthreshold:
+			issues += 1
+
+		if issues >= 1:
+			try:
+				print('Found potential issue...')
+				with open('potential_issues-{}.txt'.format(current_date), 'a') as file:
+					file.write('{}\t{}\t{}\t{}\t{}\n'.format(device,ch0,ch1,wlanid,snr))
+			except Exception as unknown_error:
+				print(unknown_error)
+
 		try:
-			print('Writing to arm file...')
-			with open('arm_devices_list-{}.txt'.format(current_date), 'a') as file:
-				file.write('{}\t{}\t{}\t{}\t{}\n'.format(device,hostname,board_name,architecture,version))
+			print('Writing to file...')
+			with open('complete_wlan_list-{}.txt'.format(current_date), 'a') as file: # create a file and write the results
+				file.write('{}\t{}\t{}\t{}\t{}\n'.format(device,ch0,ch1,wlanid,snr))
 		except Exception as unknown_error:
 			print(unknown_error)
-
-	if architecture == 'mipsbe':
-		try:
-			print('Writing to mipsbe device file...')
-			with open('mipsbe_devices_list-{}.txt'.format(current_date), 'a') as file:
-				file.write('{}\t{}\t{}\t{}\t{}\n'.format(device,hostname,board_name,architecture,version))
-		except Exception as unknown_error:
-			print(unknown_error)
-
-	if architecture == 'tile':
-		try:
-			print('Writing to tile device file...')
-			with open('tile_devices_list-{}.txt'.format(current_date), 'a') as file:
-				file.write('{}\t{}\t{}\t{}\t{}\n'.format(device,hostname,board_name,architecture,version))
-		except Exception as unknown_error:
-			print(unknown_error)	
 
 	print('----------------------------------------------------')
 	api.close()
 
-total_runtime = time.time() - start_time    # collect total runtime.
+total_runtime = time.time() - start_time    # collect total time.
 print('Total runtime {}'.format(total_runtime))
