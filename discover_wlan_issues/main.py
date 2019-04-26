@@ -49,7 +49,7 @@ for device in devices_list:
 		continue
 
 	output = runcode('/interface/wireless/registration-table/print', True)
-	
+
 	if output == (): # check if anything was returned (if interface is disabled, empty tuple returned.)
 		print('Wlan interface is likely disabled/no connected clients/or a 60G interface. Moving on to next device.')
 		continue
@@ -57,7 +57,7 @@ for device in devices_list:
 		print('Device did not return tx-signal-strength. Moving on to next device.')
 		continue
 
-	for i in range(len(output)):	# making another loop here in case there are multiple connections at this AP.
+	for i in range(len(output)):	# making another loop here for APs with multiple connections.
 		wlanid = output[i]['.id']
 		ch0 = int(output[i]['tx-signal-strength-ch0'])
 		ch1 = int(output[i]['tx-signal-strength-ch1'])
