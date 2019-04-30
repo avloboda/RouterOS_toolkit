@@ -7,6 +7,8 @@ Data collected for each device:
 - tx signal strength (ch0/ch1)
 - Signal-to-noise ratio
 - Link ID
+- Frequency
+- Channel-width
 
 Conditions data is tested against:
 - Low signal strength

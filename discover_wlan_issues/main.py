@@ -10,7 +10,7 @@ username = input('Enter your username: ')
 password = getpass.getpass(prompt='Enter your password: ', stream=None)
 print('----------------------------------')
 
-signalthreshold = -70 # wireless signal threshold
+signalthreshold = -80 # wireless signal threshold
 lopsidedthreshold = 6 # the two channels should be identical under good conditions
 snrthreshold = 15 # SNR threshold
 
