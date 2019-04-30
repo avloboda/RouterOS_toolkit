@@ -10,7 +10,7 @@ username = input('Enter your username: ')
 password = getpass.getpass(prompt='Enter your password: ', stream=None)
 print('----------------------------------')
 
-signalthreshold = -75 # wireless signal threshold
+signalthreshold = -70 # wireless signal threshold
 lopsidedthreshold = 6 # the two channels should be identical under good conditions
 snrthreshold = 15 # SNR threshold
 
@@ -25,10 +25,14 @@ def login(username, password, device):
 		print('Error has occured: {}'.format(unknown_error))
 		return None
 		
-def runcode(command, extra):    # this is where the script will sends API calls to the device.
-	try:
-		output = api(cmd=command, stats=extra)
-		return output
+def runcode(command, option):    # this is where the script will sends API calls to the device.
+	try:						 # pass 'stats' as option if you want stats included in return. pass False if you do not.
+		if option == 'stats':
+			output = api(cmd=command, stats=True)
+			return output
+		elif option == False:
+			output = api(cmd=command)
+			return output
 	except Exception as unknown_error:
 		print('Error has occured: {}'.format(unknown_error))
 		return unknown_error
@@ -48,20 +52,26 @@ for device in devices_list:
 		print('----------------------------------------------------')
 		continue
 
-	output = runcode('/interface/wireless/registration-table/print', True)
+	reg_data = runcode('/interface/wireless/registration-table/print', 'stats')
 
-	if output == (): # check if anything was returned (if interface is disabled, empty tuple returned.)
+	if reg_data == (): # check if anything was returned (if interface is disabled, empty tuple returned.)
 		print('Wlan interface is likely disabled/no connected clients/or a 60G interface. Moving on to next device.')
 		continue
-	elif 'tx-signal-strength-ch0' not in output[0]: #known issues, if persists, consider running the runcode function twice
+	elif 'tx-signal-strength-ch0' not in reg_data[0]: #known issues, if persists, consider running the runcode function twice
 		print('Device did not return tx-signal-strength. Moving on to next device.')
 		continue
 
-	for i in range(len(output)):	# making another loop here for APs with multiple connections.
-		wlanid = output[i]['.id']
-		ch0 = int(output[i]['tx-signal-strength-ch0'])
-		ch1 = int(output[i]['tx-signal-strength-ch1'])
-		snr = int(output[i]['signal-to-noise'])
+	int_data = runcode('/interface/wireless/print', False)
+	frequency = int_data[0]['frequency']
+	cwidth = int_data[0]['channel-width']
+	identity = runcode('/system/identity/print', False)
+	hostname = identity[0]['name']
+
+	for i in range(len(reg_data)):	# making another loop here for APs with multiple connections.
+		reg_id = reg_data[i]['.id']
+		ch0 = int(reg_data[i]['tx-signal-strength-ch0'])
+		ch1 = int(reg_data[i]['tx-signal-strength-ch1'])
+		snr = int(reg_data[i]['signal-to-noise'])
 		issues = 0 # keep track of potential problems
 		difference = abs(ch0-ch1) # get the difference in signals
 
@@ -76,14 +86,14 @@ for device in devices_list:
 			try:
 				print('Found potential issue...')
 				with open('potential_issues-{}.txt'.format(current_date), 'a') as file:
-					file.write('{}\t{}\t{}\t{}\t{}\n'.format(device,ch0,ch1,wlanid,snr))
+					file.write('{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\n'.format(device,ch0,ch1,reg_id,snr,frequency,cwidth,hostname))
 			except Exception as unknown_error:
 				print(unknown_error)
 
 		try:
 			print('Writing to file...')
 			with open('complete_wlan_list-{}.txt'.format(current_date), 'a') as file: # create a file and write the results
-				file.write('{}\t{}\t{}\t{}\t{}\n'.format(device,ch0,ch1,wlanid,snr))
+				file.write('{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\n'.format(device,ch0,ch1,reg_id,snr,frequency,cwidth,hostname))
 		except Exception as unknown_error:
 			print(unknown_error)
 
