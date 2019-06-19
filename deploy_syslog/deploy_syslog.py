@@ -28,11 +28,11 @@ start_time = time.time()
 with open('devices_list') as file:    # Opens, reads, and preps the IPs/hostnames of the devices to be configured. 
 	devices_list = file.read().splitlines()
 
-for device in devices_list:    # Main logic loop. Connects, and deploys configuration.
+for device in devices_list:    # Main logic loop. Connects and deploys configuration.
 	print('Connecting to {}'.format(device))
 	api = login(username, password, device)    # establish a connection
 	# Librouteros does not raise an exception if the credentials are incorrect. It sets the connection variable to None instead.
-	# The below line checks if a connection really has been established, if not, tries next device.
+	# The below line checks if a connection really has been established, if not, moves on to next device.
 	if api == None:
 		print('Failed to establish a connection. Moving on to next device.')
 		print('----------------------------------------------------')
