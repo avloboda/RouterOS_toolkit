@@ -3,7 +3,7 @@ from librouteros.login import login_plain
 from librouteros import connect, ConnectionError
 import time, getpass
 import desiredState 
-from lib import ntp
+from modules import ntp
 # https://github.com/avloboda
 # See README.md for information
 
