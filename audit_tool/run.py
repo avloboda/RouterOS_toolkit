@@ -3,7 +3,7 @@ from librouteros.login import login_plain
 from librouteros import connect, ConnectionError
 import time, getpass
 import desiredState 
-from modules import ntp, stp
+from modules import ntp, stp, counters
 # https://github.com/avloboda
 # See README.md for information
 
@@ -69,8 +69,11 @@ for device in devices_list:
 
 print('End of device list')
 
-with open('log-{}.txt'.format(current_date), 'a') as file:
+with open('log-{}.txt'.format(current_date), 'a') as file: # write summary
     file.write('End of run.\n')
+    file.write('Changes Summary:\n')
+    file.write('NTP corrections: {}\n'.format(counters.ntpCorrections))
+    file.write('STP corrections: {}\n'.format(counters.stpCorrections))
     file.write('-------------------------------------------\n')
 
 total_runtime = time.time() - start_time
