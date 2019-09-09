@@ -54,7 +54,7 @@ for device in devices_list:
         continue
 
     with open('log-{}.txt'.format(current_date), 'a') as file: # log connection
-            file.write('Connected to {}\n'.format(device))
+        file.write('Connected to {}\n'.format(device))
     
     if desiredState.ntpStatus != None: # run NTP module if settings are present.
         ntp.check_ntp(api, current_date)
