@@ -1,4 +1,5 @@
 import desiredState
+from modules import counters
 
 def check_stp(api, current_date):
     try:
@@ -10,6 +11,7 @@ def check_stp(api, current_date):
             api(cmd='/interface/bridge/set', numbers=0, **parms)
             with open('log-{}.txt'.format(current_date), 'a') as file:
                 file.write('Set STP state to: {}\n'.format(desiredState.stpMode))
+            counters.stpCorrections += 1
         else:
             with open('log-{}.txt'.format(current_date), 'a') as file:
                 file.write('No changes to STP state.\n')
