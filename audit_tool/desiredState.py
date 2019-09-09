@@ -3,4 +3,4 @@
 
 ntpStatus = True # "True" for NTP enabled, "False" for NTP disabled.
 ntpServer = '10.10.1.1' # set the desired NTP server IP address.
-stpMode = 'none' # turn off STP.
+stpMode = 'rstp' # turn on RSTP
