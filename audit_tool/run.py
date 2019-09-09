@@ -10,7 +10,7 @@ from modules import ntp, stp
 method = (login_plain,) # using the plaintext API
 current_date = time.strftime('%m-%d-%Y') # get todays date; will be appended to log file name.
 
-def login(username, password, device):
+def login(username, password, device): # manages connection process. 
     try:
         api = connect(username=username, password=password, host=device, login_methods=method)
         return api
@@ -46,7 +46,7 @@ for device in devices_list:
     # Librouteros does not raise an exception if the credentials are incorrect. It sets the connection variable to None instead.
     # The below line checks if a connection really has been established, if not, tries next device.
     if api == None:
-        with open('log-{}.txt'.format(current_date), 'a') as file:
+        with open('log-{}.txt'.format(current_date), 'a') as file: # update log file 
             file.write('Failed to establish a connection to {}\n'.format(device))
             file.write('--------------------------------------\n')
         print('Failed to establish a connection. Moving on to next device.')
@@ -74,4 +74,4 @@ with open('log-{}.txt'.format(current_date), 'a') as file:
     file.write('-------------------------------------------\n')
 
 total_runtime = time.time() - start_time
-print('Total runtime {}'.format(total_runtime))
+print('Total runtime {}'.format(total_runtime)) # display script runtime.
