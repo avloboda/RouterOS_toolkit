@@ -14,10 +14,10 @@ def login(username, password, device): # manages connection process.
     try:
         api = connect(username=username, password=password, host=device, login_methods=method)
         return api
-    except ConnectionError:
+    except ConnectionError as connectError:
         print('Connection has either been refused, or the host is unreachable. Check if API is exposed on device.')
         with open('log-{}.txt'.format(currentDate), 'a') as file:
-            file.write('Error has occured: {}\n'.format(ConnectionError))
+            file.write('Error has occured: {}\n'.format(connectError))
         return None
     except Exception as unknown_error:
         print('Error has occured: {}'.format(unknown_error))
