@@ -7,6 +7,6 @@ Currently supports enforcing:
 * STP mode (mode only, priorities should be optimized manually)
 * SNMP settings (status and community string)
 
-Requires Python3.6+.
+Requires Python 3.6+.
 
 Requires librouteros 2.2.0+ library, which can be found here: https://github.com/luqasz/librouteros
