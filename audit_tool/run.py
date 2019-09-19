@@ -3,12 +3,12 @@ from librouteros.login import login_plain
 from librouteros import connect, ConnectionError
 import time, getpass
 import desiredState 
-from modules import ntp, stp, counters
+from modules import ntp, stp, snmp, counters
 # https://github.com/avloboda
 # See README.md for information
 
 method = (login_plain,) # using the plaintext API
-current_date = time.strftime('%m-%d-%Y') # get todays date; will be appended to log file name.
+currentDate = time.strftime('%m-%d-%Y') # get todays date; will be appended to log file name.
 
 def login(username, password, device): # manages connection process. 
     try:
@@ -16,13 +16,13 @@ def login(username, password, device): # manages connection process.
         return api
     except ConnectionError:
         print('Connection has either been refused, or the host is unreachable. Check if API is exposed on device.')
-        with open('log-{}.txt'.format(current_date), 'a') as file:
-            file.write('Error has occured: {}'.format(unknown_error))
+        with open('log-{}.txt'.format(currentDate), 'a') as file:
+            file.write('Error has occured: {}\n'.format(ConnectionError))
         return None
     except Exception as unknown_error:
         print('Error has occured: {}'.format(unknown_error))
-        with open('log-{}.txt'.format(current_date), 'a') as file:
-            file.write('Error has occured: {}'.format(unknown_error))
+        with open('log-{}.txt'.format(currentDate), 'a') as file:
+            file.write('Error has occured: {}\n'.format(unknown_error))
         return None
 
 username = input('Enter your username: ')
@@ -32,7 +32,7 @@ print('----------------------------------')
 
 start_time = time.time()
 
-with open('log-{}.txt'.format(current_date), 'a') as file: # timestamp new run
+with open('log-{}.txt'.format(currentDate), 'a') as file: # timestamp new run
     file.write('-------------------------------------------\n')
     file.write('New run started at {}.\n'.format(time.strftime('%m-%d-%Y %H:%M:%S')))
     file.write('-------------------------------------------\n')
@@ -46,35 +46,39 @@ for device in devices_list:
     # Librouteros does not raise an exception if the credentials are incorrect. It sets the connection variable to None instead.
     # The below line checks if a connection really has been established, if not, tries next device.
     if api == None:
-        with open('log-{}.txt'.format(current_date), 'a') as file: # update log file 
+        with open('log-{}.txt'.format(currentDate), 'a') as file: # update log file 
             file.write('Failed to establish a connection to {}\n'.format(device))
             file.write('--------------------------------------\n')
         print('Failed to establish a connection. Moving on to next device.')
         print('----------------------------------------------------')
         continue
 
-    with open('log-{}.txt'.format(current_date), 'a') as file: # log connection
+    with open('log-{}.txt'.format(currentDate), 'a') as file: # log connection
         file.write('Connected to {}\n'.format(device))
     
     if desiredState.ntpStatus != None: # run NTP module if settings are present.
-        ntp.check_ntp(api, current_date)
+        ntp.check_ntp(api, currentDate)
 
     if desiredState.stpMode != None: # run STP module if settings are present.
-        stp.check_stp(api, current_date)
+        stp.check_stp(api, currentDate)
+
+    if desiredState.snmpStatus != None: # run SNMP module if settings are present.
+        snmp.check_snmp(api, currentDate)
 
     api.close()
-    with open('log-{}.txt'.format(current_date), 'a') as file:
+    with open('log-{}.txt'.format(currentDate), 'a') as file:
         file.write('-------------------------------------------\n')
     print('----------------------------------')
 
 print('End of device list')
 
-with open('log-{}.txt'.format(current_date), 'a') as file: # write summary
+with open('log-{}.txt'.format(currentDate), 'a') as file: # write summary
     file.write('End of run.\n')
     file.write('Changes Summary:\n')
     file.write('NTP corrections: {}\n'.format(counters.ntpCorrections))
     file.write('STP corrections: {}\n'.format(counters.stpCorrections))
+    file.write('SNMP corrections: {}\n'.format(counters.snmpCorrections))
     file.write('-------------------------------------------\n')
 
-total_runtime = time.time() - start_time
-print('Total runtime {}'.format(total_runtime)) # display script runtime.
+totalRuntime = time.time() - start_time
+print('Total runtime {}'.format(totalRuntime)) # display script runtime.
