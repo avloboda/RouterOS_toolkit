@@ -3,6 +3,13 @@
 
 ntpStatus = True # "True" for NTP enabled, "False" for NTP disabled.
 ntpServer = '10.10.1.1' # set the desired NTP server IP address.
+
 stpMode = 'rstp' # turn on RSTP
+
 snmpStatus = True # enable SNMP, True or False
 snmpCommunity = 'secretString' # set the community string.
+
+syslogServerName = 'SyslogServer' # name for syslog server settings
+syslogTarget = 'remote' # syslog message target. ie, memory, remote, etc. Check documentation.
+syslogIPaddress = '10.10.1.5' # IP address of the remote syslog server
+syslogBSDformat = True # Enable BSD syslog format

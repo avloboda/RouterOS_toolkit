@@ -3,7 +3,7 @@ from librouteros.login import login_plain
 from librouteros import connect, ConnectionError
 import time, getpass
 import desiredState 
-from modules import ntp, stp, snmp, counters
+from modules import ntp, stp, snmp, syslog, counters
 # https://github.com/avloboda
 # See README.md for information
 
@@ -30,7 +30,7 @@ password = getpass.getpass(prompt='Enter your password: ', stream=None)
 
 print('----------------------------------')
 
-start_time = time.time()
+startTime = time.time()
 
 with open('log-{}.txt'.format(currentDate), 'a') as file: # timestamp new run
     file.write('-------------------------------------------\n')
@@ -46,6 +46,7 @@ for device in devices_list:
     # Librouteros does not raise an exception if the credentials are incorrect. It sets the connection variable to None instead.
     # The below line checks if a connection really has been established, if not, tries next device.
     if api == None:
+        counters.connectionError += 1
         with open('log-{}.txt'.format(currentDate), 'a') as file: # update log file 
             file.write('Failed to establish a connection to {}\n'.format(device))
             file.write('--------------------------------------\n')
@@ -65,6 +66,9 @@ for device in devices_list:
     if desiredState.snmpStatus != None: # run SNMP module if settings are present.
         snmp.check_snmp(api, currentDate)
 
+    if desiredState.syslogServerName != None: # run syslog module if settings are present.
+        syslog.syslog(api, currentDate)
+
     api.close()
     with open('log-{}.txt'.format(currentDate), 'a') as file:
         file.write('-------------------------------------------\n')
@@ -78,7 +82,9 @@ with open('log-{}.txt'.format(currentDate), 'a') as file: # write summary
     file.write('NTP corrections: {}\n'.format(counters.ntpCorrections))
     file.write('STP corrections: {}\n'.format(counters.stpCorrections))
     file.write('SNMP corrections: {}\n'.format(counters.snmpCorrections))
+    file.write('Syslog corrections: {}\n'.format(counters.syslogCorrections))
+    file.write('Connection Errors: {}\n'.format(counters.connectionError))
     file.write('-------------------------------------------\n')
 
-totalRuntime = time.time() - start_time
+totalRuntime = time.time() - startTime
 print('Total runtime {}'.format(totalRuntime)) # display script runtime.
