@@ -17,5 +17,6 @@ Due to a RouterOS API limitation, you cannot edit a configuration set once it is
 
 Please report any bugs.
 
-Requires Python 3.6+.
-Requires librouteros 2.2.0+ library, which can be found here: https://github.com/luqasz/librouteros
+### Requirements
+* Requires Python 3.6+.
+* Requires Librouteros 2.2.0+ library, which can be found here: https://github.com/luqasz/librouteros

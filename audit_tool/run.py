@@ -57,6 +57,8 @@ for device in devices_list:
     with open('log-{}.txt'.format(currentDate), 'a') as file: # log connection
         file.write('Connected to {}\n'.format(device))
     
+    # if you want to turn off a module, comment out the appropriate if statement and function call below.
+
     if desiredState.ntpStatus != None: # run NTP module if settings are present.
         ntp.check_ntp(api, currentDate)
 
