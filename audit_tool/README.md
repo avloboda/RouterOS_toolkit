@@ -1,4 +1,4 @@
-# Mikrotik Audit Tool - WIP
+# Mikrotik Audit Tool
 
 The purpose of this tool is to enforce network specific configurations on Mikrotik wireless radios. The "desiredState.py" file contains variables to be enforced. 
 
