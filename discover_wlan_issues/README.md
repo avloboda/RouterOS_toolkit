@@ -15,6 +15,8 @@ Conditions data is tested against:
 - Lopsided signals
 - Low signal-to-noise ratio
 
-Tested with Python3.6
+Edit the variables in the "main.py" file to suit your tolerances. The current settings are there with the QRT 5 ac in mind.
 
-Scripts require the librouteros 2.2.0+ library, which can be found here: https://github.com/luqasz/librouteros
+### Requirements 
+* Requires Python3.6+
+* Requires Librouteros 2.2.0 library, which can be found here: https://github.com/luqasz/librouteros

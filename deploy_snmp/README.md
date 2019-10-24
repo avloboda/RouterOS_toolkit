@@ -7,5 +7,5 @@ This script establishes an API connection with a device and configures SNMPv2c s
 Edit your configuration in the runcode() function.
 
 ### Requirements 
-*Requires Python3.6+
-*Requires Librouteros 2.2.0 library, which can be found here: https://github.com/luqasz/librouteros
+* Requires Python3.6+
+* Requires Librouteros 2.2.0 library, which can be found here: https://github.com/luqasz/librouteros

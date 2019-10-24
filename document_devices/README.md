@@ -10,6 +10,6 @@ Data collected for each device:
 - Architecture
 - Running firmware version
 
-Tested with Python3.6
-
-Scripts require the librouteros 2.2.0+ library, which can be found here: https://github.com/luqasz/librouteros
+### Requirements 
+* Requires Python3.6+
+* Requires Librouteros 2.2.0 library, which can be found here: https://github.com/luqasz/librouteros
