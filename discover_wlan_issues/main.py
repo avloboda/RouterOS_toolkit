@@ -2,6 +2,7 @@
 from librouteros.login import login_plain
 from librouteros import connect, ConnectionError
 import time, getpass
+# https://github.com/avloboda
 # See README.md for information
 method = (login_plain,) # using the plaintext API
 current_date = time.strftime('%m-%d-%Y') # get todays date; will be appended to config filenames.
@@ -85,15 +86,15 @@ for device in devices_list:
 		if issues >= 1:
 			try:
 				print('Found potential issue...')
-				with open('potential_issues-{}.txt'.format(current_date), 'a') as file:
-					file.write('{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\n'.format(device,ch0,ch1,reg_id,snr,frequency,cwidth,hostname))
+				with open('potential_issues-{}.csv'.format(current_date), 'a') as file:
+					file.write('{},{},{},{},{},{},{},{}\n'.format(device,ch0,ch1,reg_id,snr,frequency,cwidth,hostname))
 			except Exception as unknown_error:
 				print(unknown_error)
 
 		try:
 			print('Writing to file...')
-			with open('complete_wlan_list-{}.txt'.format(current_date), 'a') as file: # create a file and write the results
-				file.write('{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\n'.format(device,ch0,ch1,reg_id,snr,frequency,cwidth,hostname))
+			with open('complete_wlan_list-{}.csv'.format(current_date), 'a') as file: # create a file and write the results
+				file.write('{},{},{},{},{},{},{},{}\n'.format(device,ch0,ch1,reg_id,snr,frequency,cwidth,hostname))
 		except Exception as unknown_error:
 			print(unknown_error)
 

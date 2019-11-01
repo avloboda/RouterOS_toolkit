@@ -2,6 +2,7 @@
 from librouteros.login import login_plain
 from librouteros import connect, ConnectionError
 import getpass, time
+# https://github.com/avloboda
 # This script establishes an API connection with a device and configures remote logging settings.
 # A "devices_list" file must exist in the same directory as the script and contain the IPs or hostnames
 # of the devices to be configured, one per line.

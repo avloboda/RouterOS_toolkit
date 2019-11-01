@@ -3,6 +3,7 @@ from librouteros.login import login_plain
 from librouteros import connect, ConnectionError
 import time, getpass
 # See README.md for information
+# https://github.com/avloboda
 method = (login_plain,) # using the plaintext API
 current_date = time.strftime('%m-%d-%Y') # get todays date; will be appended to config filenames.
 
@@ -55,32 +56,32 @@ for device in devices_list:
 
 	try:
 		print('Writing to complete-list file...')
-		with open('complete_list-{}.txt'.format(current_date), 'a') as file:
-			file.write('{}\t{}\t{}\t{}\t{}\n'.format(device,hostname,board_name,architecture,version))
+		with open('complete_list-{}.csv'.format(current_date), 'a') as file:
+			file.write('{},{},{},{},{}\n'.format(device,hostname,board_name,architecture,version))
 	except Exception as unknown_error:
 		print(unknown_error)
 
 	if architecture == 'arm':
 		try:
 			print('Writing to arm file...')
-			with open('arm_devices_list-{}.txt'.format(current_date), 'a') as file:
-				file.write('{}\t{}\t{}\t{}\t{}\n'.format(device,hostname,board_name,architecture,version))
+			with open('arm_devices_list-{}.csv'.format(current_date), 'a') as file:
+				file.write('{},{},{},{},{}\n'.format(device,hostname,board_name,architecture,version))
 		except Exception as unknown_error:
 			print(unknown_error)
 
 	if architecture == 'mipsbe':
 		try:
 			print('Writing to mipsbe device file...')
-			with open('mipsbe_devices_list-{}.txt'.format(current_date), 'a') as file:
-				file.write('{}\t{}\t{}\t{}\t{}\n'.format(device,hostname,board_name,architecture,version))
+			with open('mipsbe_devices_list-{}.csv'.format(current_date), 'a') as file:
+				file.write('{},{},{},{},{}\n'.format(device,hostname,board_name,architecture,version))
 		except Exception as unknown_error:
 			print(unknown_error)
 
 	if architecture == 'tile':
 		try:
 			print('Writing to tile device file...')
-			with open('tile_devices_list-{}.txt'.format(current_date), 'a') as file:
-				file.write('{}\t{}\t{}\t{}\t{}\n'.format(device,hostname,board_name,architecture,version))
+			with open('tile_devices_list-{}.csv'.format(current_date), 'a') as file:
+				file.write('{},{},{},{},{}\n'.format(device,hostname,board_name,architecture,version))
 		except Exception as unknown_error:
 			print(unknown_error)	
 

@@ -2,6 +2,7 @@
 from librouteros.login import login_plain
 from librouteros import connect, ConnectionError
 import getpass, time
+# https://github.com/avloboda
 
 method = (login_plain,) # using the plaintext API
 
