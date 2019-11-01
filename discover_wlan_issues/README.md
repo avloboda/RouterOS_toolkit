@@ -1,6 +1,6 @@
 # Discover Potential PtP Issues
 
-This script collects data from each device and formats it to be imported into Excel. 
+This script collects wireless data from each device and formats it into a CSV file. 
 Up to two files will be created. One will be a complete list of all registered PtP connections and one will contain connections that break your configured parameters. 
 
 Data collected for each device:
@@ -19,4 +19,4 @@ Edit the variables in the "main.py" file to suit your tolerances. The current se
 
 ### Requirements 
 * Requires Python3.6+
-* Requires Librouteros 2.2.0 library, which can be found here: https://github.com/luqasz/librouteros
+* Requires Librouteros 2.2.0+ library, which can be found here: https://github.com/luqasz/librouteros
